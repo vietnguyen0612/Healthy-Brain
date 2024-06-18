@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007BFF;
+            margin-left: 447px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #imagePreview {
+            display: none;
+            text-align: center;
+        }
+
+        #previewImg {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        /* Style for logout button */
+        #logoutButton {
+            position: fixed;
+            top: 18px;
+            right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            padding-left: 80px
+        }
+
+        .logo img {
+            width: 80px; /* Điều chỉnh kích thước ảnh */
+            height: 40px;
+            margin-right: 10px; /* Tạo khoảng cách giữa ảnh và văn bản */
+            border-radius: 50%; /* Bo góc ảnh để làm cho nó tròn */
+        }
+
+        .logo span {
+            font-size: 24px; /* Điều chỉnh kích thước chữ */
+            color: #333; /* Màu chữ */
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* 2px là độ mờ, 2px là khoảng cách đổ bóng */
+        }
+        .nav {
+            position: fixed; /* Đặt vị trí cố định */
+            top: 0; /* Dính nó vào phía trên của trình duyệt */
+            left: 0; /* Dính nó vào phía trái của trình duyệt */
+            width: 100%; /* Chiều rộng tối đa */
+            z-index: 1000; /* Đặt z-index để đảm bảo thanh nav hiển thị trên các phần khác của trang */
+            display: flex;
+            align-items: center;
+            background-color: #accbb7
+        }
+        .doctor_inf {
+            flex: 1;
+            text-align: center;
+            margin-right: 250px;
+        }
+        .doctor_inf p {
+
+        }
+        .nav_bar {
+            position: fixed; /* Đặt vị trí cố định */
+            top: 0; /* Dính nó vào phía trên của trình duyệt */
+            left: 0; /* Dính nó vào phía trái của trình duyệt */
+            width: 200px; /* Chiều rộng tối đa */
+            height: 100%;
+            z-index: 100; /* Đặt z-index để đảm bảo thanh nav hiển thị trên các phần khác của trang */
+            display: flex;
+            background-color: #e7ece9;
+            display: flex;
+            flex-direction: column;
+            padding-top: 100px;
+            border-right: 1px solid #ccc;
+        }
+        .sp {
+            padding: 20px 20px 0;
+            color: #b0b0b0;
+            line-height: 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px
+        }
+        .icon {
+            color: #464545;
+            margin-right: 5px;
+        }
+        #doctor_management {
+            width: 100%;
+            background-color: unset;
+            color: black;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 400;
+            padding-right: 46px;
+            display: flex;
+        }
+        #doctor_management:hover {
+            background-color: rgb(202, 197, 197);
+        }
+        #patient_management {
+            width: 100%;
+            background-color: unset;
+            color: black;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 400;
+            display: flex;
+        }
+        #patient_management:hover {
+            background-color: rgb(202, 197, 197);
+        }
+    </style>
+</head>
+<body>
+    <div class="nav" style="width: 100vw; display: flex; justify-content: space-between;padding-right: 50px;">
+        <div class="logo">
+            <img src="https://maciek-design.com/wp-content/uploads/2020/08/mau-sac-cua-logo-nganh-y.jpg" alt="hinh anh"/>
+            <span>HEALTHY BRAIN</span>
+        </div>
+        <div class="doctor_inf">
+            {% if 'username' in session %}
+                <p>Welcome, {{ session['role'] }} {{ session['full_name'] }}!</p>
+                <!-- Logout button -->
+                <button id="logoutButton" onclick="logout()">Logout</button>
+            {% endif %}
+
+        </div>
+    </div>
+    <div style="margin-top: 90px;">
+        <div class="nav_bar">
+            <span class="sp">TÀI KHOẢN BÁC SĨ</span>
+            <button id="doctor_management" onclick="predict()"><i class="fas fa-user-md icon"></i>Predict</button>
+            <button id="patient_management" onclick="annotate()"><i class="fas fa-pencil-alt icon"></i></i>Annotate</button>
+            <button id="patient_management" onclick="patient_m()"><i class="fas fa-bed icon"></i>Patient Manage</button>   
+
+        </div>
+        <!-- <h1>Image Prediction</h1>
+        <a href="/annotate_page">Annotate</a>
+        <form action="/" method="post" enctype="multipart/form-data" id="imageForm">
+            <input type="file" name="file" accept=".png, .jpg, .jpeg" id="imageInput" onchange="previewImage()">
+            <button type="submit">Predict</button>
+        </form>
+        
+        {% if error %}
+            <p>{{ error }}</p>
+        {% endif %}
+        <div id="imagePreview" style="display: none;">
+            <h2>Selected Image Preview</h2>
+            <img id="previewImg" alt="Selected Image">
+        </div> -->
+    </div>
+
+    <script>
+        function previewImage() {
+            var input = document.getElementById('imageInput');
+            var preview = document.getElementById('imagePreview');
+            var img = document.getElementById('previewImg');
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    img.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Function to handle logout
+        function logout() {
+            // Add logic for logout
+            // Example: redirect to the logout URL
+            window.location.href = '/logout';
+        }
+        function predict() {
+            window.location.href ='/predict';
+        }
+        function annotate() {
+            window.location.href = '/annotate_page'
+        }
+        function patient_m () {
+            window.location.href = '/patients_manage_by_doctor'
+        }
+    </script>
+</body>
+</html>

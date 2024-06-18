@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 70vh;
+        }
+        .contain{
+            border-radius: 5px;
+            display: flex;
+            gap: 80px;
+        }
+        .intro {
+            background-color: unset;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+         .form_login {
+           
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        .logo img {
+            width: 120px; /* Điều chỉnh kích thước ảnh */
+            height: 60px;
+            margin-right: 10px; /* Tạo khoảng cách giữa ảnh và văn bản */
+            border-radius: 50%; /* Bo góc ảnh để làm cho nó tròn */
+        }
+
+        .logo span {
+            font-size: 34px; /* Điều chỉnh kích thước chữ */
+            color: #333; /* Màu chữ */
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* 2px là độ mờ, 2px là khoảng cách đổ bóng */
+        }
+        .content {
+            font-size: 20px;
+            font-family: inherit;
+        }
+
+        form {
+            width: 330px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        input {
+            width: 100%;
+            height: 48px;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border-color: coral;
+            border-radius: 5px;
+        }
+        input::placeholder {
+            color: #999; /* Màu chữ của placeholder */
+            font-size: 17px;
+            font-style: italic; /* Kiểu chữ của placeholder */
+        }   
+        .forgot_password{
+            margin-top: 10px;
+            color:#4CAF50;
+            display: block;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            height: 48px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            font-size: 20px;
+            line-height: 48px;
+            padding: 0 16px;
+        
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            text-align: center;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="contain">
+        <div class="intro">
+            <div class="logo">
+                <img src="https://maciek-design.com/wp-content/uploads/2020/08/mau-sac-cua-logo-nganh-y.jpg" alt="hinh anh"/>
+                <span>HEALTHY BRAIN</span>
+            </div>
+            <div class="content">
+                Healthy brain giúp bạn có một bộ não khỏe mạnh
+            </div>
+        </div>
+        <div class="form_login">
+            {% if error %}
+            <p>{{ error }}</p>
+            {% endif %}
+            <form method="post">
+                <input type="text" name="username" placeholder="Username" required><br>
+                <input type="password" name="password" placeholder="Password" required><br>
+                <button type="submit">Log in</button>
+                <span class="forgot_password">Forgot password?</span>
+            </form>
+
+        </div>
+
+    </div>
+</body>
+</html>

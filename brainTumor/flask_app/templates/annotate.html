@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <title>Annotate Result</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+        #logoutButton {
+            position: fixed;
+            top: 18px;
+            right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            padding-left: 80px
+        }
+
+        .logo img {
+            width: 80px; /* Điều chỉnh kích thước ảnh */
+            height: 40px;
+            margin-right: 10px; /* Tạo khoảng cách giữa ảnh và văn bản */
+            border-radius: 50%; /* Bo góc ảnh để làm cho nó tròn */
+        }
+
+        .logo span {
+            font-size: 24px; /* Điều chỉnh kích thước chữ */
+            color: #333; /* Màu chữ */
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* 2px là độ mờ, 2px là khoảng cách đổ bóng */
+        }
+        .nav {
+            position: fixed; /* Đặt vị trí cố định */
+            top: 0; /* Dính nó vào phía trên của trình duyệt */
+            left: 0; /* Dính nó vào phía trái của trình duyệt */
+            width: 100%; /* Chiều rộng tối đa */
+            z-index: 1000; /* Đặt z-index để đảm bảo thanh nav hiển thị trên các phần khác của trang */
+            display: flex;
+            align-items: center;
+            background-color: #accbb7
+        }
+        .doctor_inf {
+            flex: 1;
+            text-align: center;
+            margin-right: 250px;
+        }
+        .nav_bar {
+            position: fixed; /* Đặt vị trí cố định */
+            top: 0; /* Dính nó vào phía trên của trình duyệt */
+            left: 0; /* Dính nó vào phía trái của trình duyệt */
+            width: 200px; /* Chiều rộng tối đa */
+            height: 100%;
+            z-index: 100; /* Đặt z-index để đảm bảo thanh nav hiển thị trên các phần khác của trang */
+            display: flex;
+            background-color: #e7ece9;
+            display: flex;
+            flex-direction: column;
+            padding-top: 100px;
+            border-right: 1px solid #ccc;
+        }
+        .sp {
+            padding: 20px 20px 0;
+            color: #b0b0b0;
+            line-height: 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px
+        }
+        .icon {
+            color: #464545;
+            margin-right: 5px;
+        }
+        #doctor_management {
+            width: 100%;
+            background-color: unset;
+            color: black;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 400;
+            padding-right: 46px;
+            display: flex;
+        }
+        #doctor_management:hover {
+            background-color: rgb(202, 197, 197);
+        }
+        #patient_management {
+            width: 100%;
+            background-color: unset;
+            color: black;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 400;
+            display: flex;
+            color: rgb(89, 89, 219);
+        }
+        #patient_management .icon {
+            color: rgb(89, 89, 219);
+        }
+        #patient_management:hover {
+            background-color: rgb(202, 197, 197);
+        }
+        #patient_managements {
+            width: 100%;
+            background-color: unset;
+            color: black;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 400;
+            display: flex;
+            
+        }
+        #patient_managements:hover {
+            background-color: rgb(202, 197, 197);
+        }
+        .content {
+            padding-left: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav" style="width: 100vw; display: flex; justify-content: space-between;padding-right: 50px;">
+        <div class="logo">
+            <img src="https://maciek-design.com/wp-content/uploads/2020/08/mau-sac-cua-logo-nganh-y.jpg" alt="hinh anh"/>
+            <span>HEALTHY BRAIN</span>
+        </div>
+        <div class="doctor_inf">
+            {% if 'username' in session %}
+                <p>Welcome, {{ session['role'] }} {{ session['full_name'] }}!</p>
+                <!-- Logout button -->
+                <button id="logoutButton" onclick="logout()">Logout</button>
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="content">
+        <div class="nav_bar">
+            <span class="sp">TÀI KHOẢN BÁC SĨ</span>
+            <button id="doctor_management" onclick="predict()"><i class="fas fa-user-md icon"></i>Predict</button>
+            <button id="patient_management" onclick="annotate()"><i class="fas fa-pencil-alt icon"></i></i>Annotate</button>
+            <button id="patient_managements" onclick="patient_m()"><i class="fas fa-bed icon"></i>Patient Manage</button>   
+
+        </div>
+        <h1>Annotate Result</h1>
+        <div>
+            <h2 style="text-align: center;">Bounding Box Annotation</h2>
+            <p>Click and drag to draw bounding boxes on the image.</p>
+            
+            <!-- Nút chọn ảnh mới và hiển thị canvas -->
+            <div class="" style="display: flex; gap: 30px;">
+                <div>
+                    <input type="file" id="newImageInput" accept=".png, .jpg, .jpeg" style="display:none;" onchange="loadNewImage()">
+                    <button 
+                        style="background-color: #4CAF50; padding: 5px; color: #fff; border-radius: 4px; border: none; margin: 20px 0;"
+                        onclick="document.getElementById('newImageInput').click();"
+                    >Choose Image</button>
+                    
+                    <canvas id="annotateCanvas" width="600" height="500" style="border:1px solid #000;"></canvas>
+                </div>
+                <div style="">
+                    <p><strong>X:</strong> <span id="xValue"></span></p>
+                    <p><strong>Y:</strong> <span id="yValue"></span></p>
+                    <p><strong>Width:</strong> <span id="widthValue"></span></p>
+                    <p><strong>Height:</strong> <span id="heightValue"></span></p>
+                </div>
+
+            </div>
+            <!-- Nút lưu và chuyển dữ liệu về server -->
+            <form action="/annotate" method="post">
+                <input type="hidden" name="action" value="annotate">
+                <input type="hidden" name="image_path" value="{{ image_path }}">
+                <input type="hidden" name="output_path" value="{{ output_path }}">
+                <!-- Thêm input hidden để lưu thông tin về bounding box -->
+                <input type="hidden" name="bounding_boxes" id="boundingBoxesInput">
+                <button style="background-color: #4CAF50; padding: 5px; color: #fff; border-radius: 4px; border: none;" type="button" onclick="saveAnnotation()">Save Annotation</button>
+            </form>
+
+            
+        </div>
+
+    </div>
+
+    <script>
+        var canvas = document.getElementById('annotateCanvas');
+        var ctx = canvas.getContext('2d');
+        var img = new Image();
+
+        var isDrawing = false;
+        var startX, startY;
+        var boundingBoxes = [];  // Mảng để lưu thông tin bounding box
+
+        // Hàm xử lý khi người dùng chọn ảnh mới
+        canvas.addEventListener('mouseup', function(e) {
+            isDrawing = false;
+            
+            // Tính toán các giá trị x, y, width và height của bounding box
+            var x1 = startX;
+            var y1 = startY;
+            var x2 = e.clientX - canvas.getBoundingClientRect().left;
+            var y2 = e.clientY - canvas.getBoundingClientRect().top;
+            var width = x2 - x1;
+            var height = y2 - y1;
+            
+            // Vẽ bounding box
+            drawRectangle(x1, y1, x2, y2);
+            
+            // Hiển thị thông số bounding box
+            document.getElementById('xValue').textContent = x1;
+            document.getElementById('yValue').textContent = y1;
+            document.getElementById('widthValue').textContent = width;
+            document.getElementById('heightValue').textContent = height;
+        });
+
+        function loadNewImage() {
+            var input = document.getElementById('newImageInput');
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    img.src = e.target.result;
+
+                    // Gọi ngay sau khi gán src để đảm bảo hiển thị ảnh ngay lập tức
+                    img.onload = function() {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        boundingBoxes = [];  // Reset mảng boundingBoxes khi chọn ảnh mới
+                    };
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        canvas.addEventListener('mousedown', function(e) {
+            isDrawing = true;
+            startX = e.clientX - canvas.getBoundingClientRect().left;
+            startY = e.clientY - canvas.getBoundingClientRect().top;
+        });
+
+        canvas.addEventListener('mousemove', function(e) {
+            if (!isDrawing) return;
+            var x = e.clientX - canvas.getBoundingClientRect().left;
+            var y = e.clientY - canvas.getBoundingClientRect().top;
+            drawRectangle(startX, startY, x, y);
+        });
+
+        canvas.addEventListener('mouseup', function() {
+            isDrawing = false;
+        });
+
+        function drawRectangle(x1, y1, x2, y2) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.rect(x1, y1, x2 - x1, y2 - y1);
+            ctx.strokeStyle = 'green';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+
+        // Hàm lưu thông tin bounding box khi nhấn nút Save Annotation
+        function saveAnnotation() {
+            // Chuyển đổi tọa độ và kích thước bounding box sang định dạng YOLO
+            var yoloBoxes = boundingBoxes.map(function(box) {
+                var x_center = (box[0] + box[2]) / (2.0 * canvas.width);
+                var y_center = (box[1] + box[3]) / (2.0 * canvas.height);
+                var width = (box[2] - box[0]) / canvas.width;
+                var height = (box[3] - box[1]) / canvas.height;
+                return [x_center, y_center, width, height];
+            });
+
+            // Lưu thông tin bounding box vào input hidden
+            document.getElementById('boundingBoxesInput').value = JSON.stringify(yoloBoxes);
+
+            // Lấy tên file ảnh để tạo tên tương ứng cho tệp văn bản
+            var imagePath = document.getElementById('newImageInput').value;
+            var imageName = imagePath.split('\\').pop().split('/').pop().split('.').shift();
+
+            // Lưu tệp văn bản vào thư mục "labels"
+            var labelsDir = 'annotate/labels';
+            var labelFilePath = labelsDir + '/' + imageName + '.txt';
+
+            // Tạo form data để chứa thông tin bounding box và gửi lên server
+            var formData = new FormData();
+            formData.append('bounding_boxes', JSON.stringify(yoloBoxes));
+
+            // Sử dụng fetch API để gửi dữ liệu lên server
+            fetch('/annotate', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Xử lý phản hồi từ server (nếu cần)
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }  
+        
+        function logout() {
+            // Add logic for logout
+            // Example: redirect to the logout URL
+            window.location.href = '/logout';
+        }
+        function predict() {
+            window.location.href ='/predict';
+        }
+        function patient_m () {
+            window.location.href = '/patients_manage_by_doctor'
+        }
+    </script>
+</body>
+</html>

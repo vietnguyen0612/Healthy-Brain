@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save Diagnosis</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        label {
+            margin-right: 8px;
+        }
+
+        input, textarea {
+            flex: 2;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Save Diagnosis Information</h1>
+    <div style="display: flex; justify-content: center; gap: 20px;">
+
+        <div style="display: flex; flex-direction: column; text-align: center;">
+            <p>Original Image:</p> <img src="{{ original_image_path.replace('static', 'static/') }}" alt="Original Image">
+        </div>
+        <div style="display: flex; flex-direction: column;text-align: center;">
+            <p>Result Image: </p><img src="{{ result_image_path.replace('static', 'static/r') }}" alt="Result Image">
+        </div>
+    </div>
+
+    
+
+    <!-- Thêm form để nhập thông tin khác -->
+    <form method="post" action="{{ url_for('save_patient') }}">
+        <div style="display: flex; align-items: center;">
+            <label for="patient_name">Patient Name:</label>
+            <input type="text" name="patient_name" id="patient_name" required>
+        </div>
+        <div style="display: flex; align-items: center; margin-top: 10px;">
+            <label for="patient_name">Patient Age:</label>
+            <input type="text" name="patient_age" id="patient_age" required>
+        </div>
+        <div style="display: flex; align-items: center; margin-top: 10px;">
+            <label for="patient_name">Patient Address:</label>
+            <input type="text" name="patient_address" id="patient_address" required>
+        </div>
+        {% set size_int = bounding_box_size | int %}
+
+        <div style="display: flex; align-items: center; ">
+            <label style="width: 100px;display: flex,;" for="bounding_box_size">Tumor Size:</label>
+            <p>
+                Khối u có kích thước:
+                {% if size_int < 1000 %}
+                    Nhỏ
+                {% elif 1000 <= size_int <= 2000 %}
+                    Vừa
+                {% else %}
+                    Lớn
+                {% endif %}
+            </p>
+        </div>
+
+    
+        <div style="display: flex; align-items: center; ">
+            <label for="bounding_box_position">Tumor Position:</label>
+            <p>{{ bounding_box_position }}</p>
+        </div>
+
+        <label for="additional_info">Additional Information:</label>
+        <textarea name="additional_info" id="additional_info"></textarea>
+        <input type="hidden" name="result_image_data" value="{{ result_image_path }}">
+        <input type="hidden" name="bounding_box_size" value="{{ bounding_box_size }}">
+        <input type="hidden" name="bounding_box_position" value="{{ bounding_box_position }}">
+        <button type="submit">Save Diagnosis</button>
+    </form>
+</body>
+</html>
